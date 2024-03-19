@@ -9,9 +9,10 @@ from backend.db.repository import Repo
 from backend.servises import verify_password, create_access_token, ConnectionManger
 from backend.dependencies import get_repository, get_session, get_repository_ws, get_manager, get_manager_ws
 from backend.models import (
-    AuthRequest,
     LoginUser,
     RegisterUser,
+    LoginRequest,
+    RegisterRequest,
     SendMessage,
     DeleteMessageModel,
     UpdateMessageModel
@@ -39,7 +40,7 @@ app.add_middleware(
 
 @app.post("/login")
 async def login(
-    user: AuthRequest,
+    user: LoginRequest,
     session: AsyncSession = Depends(get_session),
     repository: Repo = Depends(get_repository)
 ):
@@ -55,7 +56,7 @@ async def login(
 
 @app.post("/register")
 async def login(
-    user: AuthRequest,
+    user: RegisterRequest,
     session: AsyncSession = Depends(get_session),
     repository: Repo = Depends(get_repository)
 ):

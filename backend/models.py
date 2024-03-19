@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, validator
 from typing import Optional, Union
 
 
@@ -14,13 +14,21 @@ class LoginUser(BaseModel):
 
 
 class RegisterUser(BaseModel):
-    username: str
-    password: str
-    confirmation_password: str
+    username: str = Field(..., min_length=3, max_length=50)
+    password: str = Field(..., min_length=6)
+    confirmation_password: str = Field(..., min_length=6)
 
+    @validator('confirmation_password')
+    def passwords_match(cls, v, values, **kwargs):
+        if 'password' in values and v != values['password']:
+            raise ValueError('Passwords do not match')
+        return v
 
-class AuthRequest(BaseModel):
-    user: Union[RegisterUser, LoginUser]
+class RegisterRequest(BaseModel):
+    user: RegisterUser
+
+class LoginRequest(BaseModel):
+    user: LoginUser
 
 
 class SendMessage(BaseModel):
